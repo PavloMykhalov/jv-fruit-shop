@@ -12,15 +12,8 @@ public class SupplyHandler implements OperationHandler {
     }
 
     @Override
-    public void getHandler(FruitTransaction fruitTransaction) {
-        FruitTransaction fruitTransactionInDataBase;
-        fruitTransactionInDataBase = fruitDao.get(fruitTransaction.getFruit());
-        if (fruitTransactionInDataBase == null) {
-            fruitDao.add(fruitTransaction);
-        } else {
-            int amount = fruitTransactionInDataBase.getQuantity() + fruitTransaction.getQuantity();
-            fruitTransactionInDataBase.setQuantity(amount);
-            fruitDao.add(fruitTransactionInDataBase);
-        }
+    public void handle(FruitTransaction fruitTransaction) {
+        fruitDao.update(fruitTransaction.getFruit(),
+                fruitDao.getQuantity(fruitTransaction.getFruit()) - fruitTransaction.getQuantity());
     }
 }

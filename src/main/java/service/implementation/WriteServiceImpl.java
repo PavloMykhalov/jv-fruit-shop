@@ -7,10 +7,10 @@ import service.WriteService;
 
 public class WriteServiceImpl implements WriteService {
     @Override
-    public void writeToFile(String filePath, String data) {
+    public void writeToFile(String filePath, String report) {
         File file = new File(filePath);
         try {
-            Files.write(file.toPath(), data.getBytes());
+            Files.write(file.toPath(), report.getBytes());
         } catch (IOException e) {
             throw new RuntimeException("Can't write data to file " + filePath, e);
         }

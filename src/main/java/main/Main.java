@@ -27,30 +27,32 @@ public class Main {
     private static final String REPORT_FILE_PATH = "src/main/resources/report.csv";
 
     public static void main(String[] args) {
-        ReaderService readerService = new ReaderServiceImpl();
-        ParseService parseService = new ParseServiceImpl();
-        List<String> stringsFromInput = readerService.readFromFile(INPUT_FILE_PATH);
-        final List<FruitTransaction> fruitTransactionList = parseService.parse(stringsFromInput);
-
         FruitDao fruitDao = new FruitDaoImpl();
-        Map<FruitTransaction.TransactionType,
+        Map<FruitTransaction.Operation,
                 OperationHandler> operationHandlerMap = new HashMap<>();
-        operationHandlerMap.put(FruitTransaction.TransactionType.BALANCE,
+        operationHandlerMap.put(FruitTransaction.Operation.BALANCE,
                 new BalanceHandler(fruitDao));
-        operationHandlerMap.put(FruitTransaction.TransactionType.PURCHASE,
+        operationHandlerMap.put(FruitTransaction.Operation.PURCHASE,
                 new PurchaseHandler(fruitDao));
-        operationHandlerMap.put(FruitTransaction.TransactionType.RETURN,
+        operationHandlerMap.put(FruitTransaction.Operation.RETURN,
                 new ReturnHandler(fruitDao));
-        operationHandlerMap.put(FruitTransaction.TransactionType.SUPPLY,
+        operationHandlerMap.put(FruitTransaction.Operation.SUPPLY,
                 new SupplyHandler(fruitDao));
 
+        ReaderService readerService = new ReaderServiceImpl();
+        ParseService parseService = new ParseServiceImpl();
+        List<String> lines = readerService.readFromFile(INPUT_FILE_PATH);
+        List<FruitTransaction> fruitTransactions = parseService.parse(lines);
+
         Strategy strategy = new StrategyImpl(operationHandlerMap);
-        for (FruitTransaction fruitTransaction: fruitTransactionList) {
-            strategy.process(fruitTransaction.getTransaction()).getHandler(fruitTransaction);
+        for (FruitTransaction fruitTransaction: fruitTransactions) {
+            strategy.process(fruitTransaction.getOperation()).handle(fruitTransaction);
         }
 
-        WriteService writeService = new WriteServiceImpl();
         ReportService reportService = new ReportServiceImpl();
-        writeService.writeToFile(REPORT_FILE_PATH, reportService.getReport(fruitDao.getAll()));
+        String report = reportService.getReport();
+        WriteService writeService = new WriteServiceImpl();
+        writeService.writeToFile(REPORT_FILE_PATH, report);
+
     }
 }

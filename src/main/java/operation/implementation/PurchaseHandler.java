@@ -12,16 +12,9 @@ public class PurchaseHandler implements OperationHandler {
     }
 
     @Override
-    public void getHandler(FruitTransaction fruitTransaction) {
-        FruitTransaction fruitTransactionInDataBase = fruitDao.get(fruitTransaction.getFruit());
-        if (fruitTransactionInDataBase == null) {
-            throw new RuntimeException(fruitTransaction.getFruit() + " is not available now");
-        }
-        int difference = fruitTransactionInDataBase.getQuantity() - fruitTransaction.getQuantity();
-        if (difference < 0) {
-            throw new RuntimeException(fruitTransaction.getFruit() + " is not enough in shop now");
-        }
-        fruitTransactionInDataBase.setQuantity(difference);
-        fruitDao.add(fruitTransactionInDataBase);
+    public void handle(FruitTransaction fruitTransaction) {
+        fruitDao.update(fruitTransaction.getFruit(),
+                fruitDao.getQuantity(fruitTransaction.getFruit()) - fruitTransaction.getQuantity());
     }
 }
+

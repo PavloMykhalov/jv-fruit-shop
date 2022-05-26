@@ -1,14 +1,7 @@
 package dao;
 
-import model.FruitTransaction;
+public interface FruitDao {
+    Integer getQuantity(String fruitName);
 
-import java.util.List;
-
-
-public interface FruitTransactionDao {
-    void add(FruitTransaction fruitTransaction);
-
-    FruitTransaction get(String fruitName);
-
-    List<FruitTransaction> getAll();
+    void update(String fruitName, Integer amount);
 }
