@@ -1,9 +1,11 @@
 package dao;
 
-import java.util.List;
 import model.FruitTransaction;
 
-public interface FruitDao {
+import java.util.List;
+
+
+public interface FruitTransactionDao {
     void add(FruitTransaction fruitTransaction);
 
     FruitTransaction get(String fruitName);
